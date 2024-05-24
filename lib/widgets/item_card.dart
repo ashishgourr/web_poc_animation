@@ -77,156 +77,172 @@ class _ItemCardState extends State<ItemCard> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (event) {
-        setState(() {
-          isHovered = true;
-        });
-      },
-      onExit: (event) {
-        setState(() {
-          isHovered = false;
-        });
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 375),
-        height: 180.0,
-        width: 520.0,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          boxShadow: isHovered
-              ? [
-                  const BoxShadow(
-                    offset: Offset(0, 5),
-                    blurRadius: 20.0,
-                    color: Colors.black12,
-                  ),
-                ]
-              : [],
-        ),
-        child: Material(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          clipBehavior: Clip.antiAlias,
-          color: Colors.white,
-          child: InkWell(
-            hoverColor: Colors.white,
-            highlightColor: Colors.white,
-            splashColor: Colors.black12,
-            onTap: () {},
-            child: BlocBuilder<DisplayOffset, ScrollOffset>(
-                buildWhen: (previous, current) {
-              if ((current.scrollOffsetValue >= 1000 &&
-                      current.scrollOffsetValue <= 1950) ||
-                  controller.isAnimating) {
-                return true;
-              } else {
-                return false;
-              }
-            }, builder: (context, state) {
-              if (state.scrollOffsetValue >= (1100 + (widget.index * 100))) {
-                controller.forward();
-              } else {
-                controller.reverse();
-              }
-              return AnimatedBuilder(
-                  animation: imageOpacity,
-                  builder: (context, child) {
-                    return Row(
-                      children: [
-                        SizedBox(
-                          height: 180.0,
-                          width: 180.0,
-                          child: Center(
-                            child: FadeTransition(
-                              opacity: imageOpacity,
-                              child: SizedBox(
-                                height: imageReveal.value,
-                                width: imageReveal.value,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  child: Image.network(
-                                    widget.image,
-                                    fit: BoxFit.cover,
-                                    filterQuality: FilterQuality.medium,
-                                    scale: 0.5,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20.0,
-                        ),
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double containerHeight = constraints.maxWidth < 600 ? 160.0 : 180.0;
+        double containerWidth =
+            constraints.maxWidth < 600 ? constraints.maxWidth * 0.9 : 520.0;
+        // double imageSize = constraints.maxWidth < 600 ? 130.0 : 170.0;
+        double fontSizeTitle = constraints.maxWidth < 600 ? 18.0 : 20.0;
+        double fontSizeSubtitle = constraints.maxWidth < 600 ? 13.0 : 15.0;
+        double fontSizeDescription = constraints.maxWidth < 600 ? 11.0 : 12.0;
+        double fontSizePrice = constraints.maxWidth < 600 ? 12.0 : 13.0;
+        double verticalSpacing = constraints.maxWidth < 600 ? 5.0 : 10.0;
+
+        return MouseRegion(
+          onEnter: (event) {
+            setState(() {
+              isHovered = true;
+            });
+          },
+          onExit: (event) {
+            setState(() {
+              isHovered = false;
+            });
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 375),
+            height: containerHeight,
+            width: containerWidth,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: isHovered
+                  ? [
+                      const BoxShadow(
+                        offset: Offset(0, 5),
+                        blurRadius: 20.0,
+                        color: Colors.black12,
+                      ),
+                    ]
+                  : [],
+            ),
+            child: Material(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              clipBehavior: Clip.antiAlias,
+              color: Colors.white,
+              child: InkWell(
+                hoverColor: Colors.white,
+                highlightColor: Colors.white,
+                splashColor: Colors.black12,
+                onTap: () {},
+                child: BlocBuilder<DisplayOffset, ScrollOffset>(
+                    buildWhen: (previous, current) {
+                  if ((current.scrollOffsetValue >= 1000 &&
+                          current.scrollOffsetValue <= 1950) ||
+                      controller.isAnimating) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }, builder: (context, state) {
+                  if (state.scrollOffsetValue >=
+                      (1100 + (widget.index * 100))) {
+                    controller.forward();
+                  } else {
+                    controller.reverse();
+                  }
+                  return AnimatedBuilder(
+                      animation: imageOpacity,
+                      builder: (context, child) {
+                        return SingleChildScrollView(
+                          child: Row(
                             children: [
-                              FadeTransition(
-                                opacity: headingTextOpacity,
-                                child: Text(
-                                  widget.title,
-                                  style: GoogleFonts.quicksand(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 20.0,
-                                  ),
-                                ),
-                              ),
-                              FadeTransition(
-                                opacity: subTextOpacity,
-                                child: Text(
-                                  widget.subtitle,
-                                  style: GoogleFonts.quicksand(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15.0,
-                                    color: Colors.black38,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10.0,
-                              ),
-                              FadeTransition(
-                                opacity: descriptionOpacity,
-                                child: Text(
-                                  widget.description,
-                                  style: GoogleFonts.quicksand(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 12.0,
-                                    color: Colors.black54,
+                              SizedBox(
+                                height: containerHeight,
+                                width: containerHeight,
+                                child: Center(
+                                  child: FadeTransition(
+                                    opacity: imageOpacity,
+                                    child: SizedBox(
+                                      height: imageReveal.value,
+                                      width: imageReveal.value,
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        child: Image.network(
+                                          widget.image,
+                                          fit: BoxFit.cover,
+                                          filterQuality: FilterQuality.medium,
+                                          scale: 0.5,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                               const SizedBox(
-                                height: 10.0,
+                                width: 20.0,
                               ),
-                              FadeTransition(
-                                opacity: priceOpacity,
-                                child: Text(
-                                  widget.price,
-                                  style: GoogleFonts.quicksand(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 13.0,
-                                    color: primaryColor,
-                                  ),
+                              Flexible(
+                                fit: FlexFit.loose,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    FadeTransition(
+                                      opacity: headingTextOpacity,
+                                      child: Text(
+                                        widget.title,
+                                        style: GoogleFonts.quicksand(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: fontSizeTitle,
+                                        ),
+                                      ),
+                                    ),
+                                    FadeTransition(
+                                      opacity: subTextOpacity,
+                                      child: Text(
+                                        widget.subtitle,
+                                        style: GoogleFonts.quicksand(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: fontSizeSubtitle,
+                                          color: Colors.black38,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: verticalSpacing,
+                                    ),
+                                    FadeTransition(
+                                      opacity: descriptionOpacity,
+                                      child: Text(
+                                        widget.description,
+                                        style: GoogleFonts.quicksand(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: fontSizeDescription,
+                                          color: Colors.black54,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: verticalSpacing,
+                                    ),
+                                    FadeTransition(
+                                      opacity: priceOpacity,
+                                      child: Text(
+                                        widget.price,
+                                        style: GoogleFonts.quicksand(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: fontSizePrice,
+                                          color: primaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        // const SizedBox(
-                        //   width: 20.0,
-                        // ),
-                      ],
-                    );
-                  });
-            }),
+                        );
+                      });
+                }),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

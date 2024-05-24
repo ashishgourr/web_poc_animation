@@ -36,29 +36,31 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       controller: controller,
-      child: const Column(
-        children: [
-          Header(),
-          SizedBox(
-            height: 100.0,
-          ),
-          Menu(),
-          SizedBox(
-            height: 100.0,
-          ),
-          Payment(),
-          SizedBox(
-            height: 120.0,
-          ),
-          Order(),
-          SizedBox(
-            height: 100.0,
-          ),
-          SizedBox(
-            height: 100,
-          ),
-          Footer(),
-        ],
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          double verticalSpacing = constraints.maxWidth < 600 ? 50 : 100;
+          return Column(
+            children: [
+              const Header(),
+              SizedBox(
+                height: verticalSpacing,
+              ),
+              const Menu(),
+              SizedBox(
+                height: verticalSpacing,
+              ),
+              const Payment(),
+              SizedBox(
+                height: verticalSpacing,
+              ),
+              const Order(),
+              SizedBox(
+                height: verticalSpacing * 2,
+              ),
+              const Footer(),
+            ],
+          );
+        },
       ),
     );
   }
